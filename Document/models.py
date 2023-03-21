@@ -1,5 +1,16 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+class Category(models.Model):
+    category_id = models.CharField(max_length=20)
+    category_name = models.CharField(max_length=70)
+
+    def __str__(self):
+        return self.category_id
+
+    class Meta:
+        db_table = 'Category'
+
+
 class Document(models.Model):
     docs_id = models.CharField(max_length=50)
     category_id = models.CharField(max_length=20)
@@ -13,6 +24,7 @@ class Document(models.Model):
 
     class Meta:
         db_table = 'Document'
+
 class User(AbstractUser):
     # Delete not use field
     username = None
