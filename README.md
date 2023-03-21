@@ -158,3 +158,8 @@ Quit the server with CONTROL-C.
 #### 8. Testing
 `http://127.0.0.1:8000/api/documents`
 You can use postman to test it easily or open with your browser
+
+#### 9. Open DB using pycharm
+- Double-click db.sqlite3
+- DB tab will show like this image
+![img_1.png](img_1.png)
