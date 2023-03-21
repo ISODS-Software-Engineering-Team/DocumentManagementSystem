@@ -19,7 +19,7 @@ pip3 install rest_framework_simplejwt
  - Create project(Document)
 ```
 django-admin startproject src .
-django-admin startapp car
+django-admin startapp Document
 ```
 
 ### How it works
