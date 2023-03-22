@@ -18,10 +18,7 @@ curl --location 'http://127.0.0.1:8000/api/documents' \
     "author": "cvbc"
 }'
 ```
-get curl using Postman by following image bellow:
-![img.png](img.png)
-then it will show the curl tab
-![img_1.png](img_1.png)
+
 # Implementation 
 
 Add any implementation details
