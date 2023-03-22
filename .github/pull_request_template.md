@@ -1,7 +1,27 @@
 # What does this PR solve and how
-What is this PR about?
+## What is this PR about?
 - clarify context and AC
 
+## How to run it step by step
+Step 1: Run application
+
+Step 2: api request (using curl format)
+```curl
+curl --location 'http://127.0.0.1:8000/api/documents' \
+--header 'Content-Type: application/json' \
+--data '{
+    "docs_id": "dvsd",
+    "category_id": "sdfsd",
+    "brief": "sdf",
+    "content": "sdf",
+    "media_file": "bcv",
+    "author": "cvbc"
+}'
+```
+get curl using Postman by following image bellow:
+![img.png](img.png)
+then it will show the curl tab
+![img_1.png](img_1.png)
 # Implementation 
 
 Add any implementation details
