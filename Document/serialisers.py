@@ -5,7 +5,8 @@ from Document.models import Document, User
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ('docs_id', 'category_id', 'brief', 'content', 'media_file', 'author', 'created_date')
+        fields = ('docs_id', 'category_id', 'brief', 'content', 'media_file', 'author',
+                  'created_date', 'document_image')
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
