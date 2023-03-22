@@ -17,8 +17,8 @@ Add any implementation details
 - any relevant screenshot
 
 # PR Checklist
-- [] Documentation
-- [] Unit testing passed
-- [] Code review and discussion
-- [] Approve
-- [] Merge
+- [ ] Documentation
+- [ ] Unit testing passed
+- [ ] Code review and discussion
+- [ ] Approve
+- [ ] Merge
