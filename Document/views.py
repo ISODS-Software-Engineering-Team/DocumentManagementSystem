@@ -117,7 +117,7 @@ class DeleteCategoryView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Category.objects.all()
 
-    def delete_category(self, request, **kwargs):
+    def delete(self, request, **kwargs):
         category = get_object_or_404(Category, id=kwargs.get('pk'))
         if category.delete():
             return JsonResponse({
