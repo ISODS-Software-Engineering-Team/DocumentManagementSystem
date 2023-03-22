@@ -10,7 +10,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from Document.models import Document
-from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer
+from .models import Category
+from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
 
 
 class ListCreateDocumentView(ListCreateAPIView):
@@ -33,6 +34,7 @@ class ListCreateDocumentView(ListCreateAPIView):
         return JsonResponse({
             'message': 'Create a new Document unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
     model = Document
@@ -60,6 +62,8 @@ class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Delete Document successful!'
         }, status=status.HTTP_200_OK)
+
+
 class UserRegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -104,3 +108,23 @@ class UserLoginView(APIView):
             'error_messages': serializer.errors,
             'error_code': 400
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteCategoryView(RetrieveUpdateDestroyAPIView):
+    model = Category
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.all()
+
+    def delete_category(self, request, **kwargs):
+        category = get_object_or_404(Category, id=kwargs.get('pk'))
+        if category.delete():
+            return JsonResponse({
+                'message': 'Deleted Category Successful!'
+            }, status=status.HTTP_200_OK)
+        else:
+
+            return JsonResponse({
+                'message': 'Deleted Category unsuccessful!'
+            }, status=status.HTTP_400_BAD_REQUEST)
