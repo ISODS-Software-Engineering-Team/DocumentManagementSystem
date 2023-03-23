@@ -1,3 +1,5 @@
+import genericpath
+from pdb import post_mortem
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
@@ -13,6 +15,8 @@ from Document.models import Document
 from .models import Category
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
 
+from rest_framework import generics
+from rest_framework.response import Response
 
 class ListCreateDocumentView(ListCreateAPIView):
     model = Document
@@ -35,6 +39,16 @@ class ListCreateDocumentView(ListCreateAPIView):
             'message': 'Create a new Document unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
 
+# api with path /documents, get method to return list all category in mySQL DB
+# I made it with path /categories instead
+class CategoryListView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+# api with path /documents/{{id}}. get method to return specific category with this id
+class RetrieveCategoryView(RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
     model = Document
@@ -42,7 +56,7 @@ class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
 
     def put(self, request, *args, **kwargs):
         document = get_object_or_404(Document, id=kwargs.get('pk'))
-        serializer = DocumentSerializer(post, data=request.data)
+        serializer = DocumentSerializer(post_mortem, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -128,3 +142,4 @@ class DeleteCategoryView(RetrieveUpdateDestroyAPIView):
             return JsonResponse({
                 'message': 'Deleted Category unsuccessful!'
             }, status=status.HTTP_400_BAD_REQUEST)
+            
