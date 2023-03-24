@@ -16,12 +16,15 @@ pip3 install django
 pip3 install djangorestframework
 pip3 install rest_framework_simplejwt
 ```
- - Create project(Document)
+ - DB mirgration
 ```
-django-admin startproject src .
-django-admin startapp Document
+python3 manage.py makemigrations
+python3 manage.py migrate
 ```
-
+ -  Running
+```
+python3 manage.py runserver
+```
 ### How it works
 #### 1. Add Django Rest framwork to src/settings.py
 ``` 
