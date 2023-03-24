@@ -8,4 +8,5 @@ urlpatterns = [
     path('login', UserLoginView.as_view(), name='login'),
     path('documents', views.ListCreateDocumentView.as_view()),
     path('documents/<int:pk>', views.UpdateDeleteDocumentView.as_view()),
+    path('category/<int:pk>', views.DeleteCategoryView.as_view()),
 ]
