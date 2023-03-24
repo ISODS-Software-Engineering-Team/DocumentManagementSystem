@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 class Category(models.Model):
     category_id = models.CharField(max_length=20)
@@ -30,15 +30,23 @@ class Document(models.Model):
 
 class User(AbstractUser):
     # Delete not use field
-    username = None
+    username = models.CharField(max_length=100)
     last_login = None
-    is_staff = None
-    is_superuser = None
-
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     password = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, unique=True)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username', 'password']
+
+    @staticmethod
+    def has_perms(perm, obj=None):
+        return True
+
+    @property
+    def is_admin(self):
+        return self.admin
+
     def __str__(self):
         return self.email
 
