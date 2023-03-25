@@ -13,6 +13,17 @@ from Document.models import Document
 from .models import Category
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
 
+class CreateCategory(ListCreateAPIView):   
+    model = Category
+    serializer_class = CategorySerializer
+    
+    def create_category(self, request, *args, **kwargs):
+        
+        serializer = CategorySerializer()
+        if serializer.is_valid():
+            serializer.save()
+            
+            return JsonResponse(serializer.data)
 
 class ListCreateDocumentView(ListCreateAPIView):
     model = Document
