@@ -17,6 +17,9 @@ class CreateCategory(ListCreateAPIView):
     model = Category
     serializer_class = CategorySerializer
     
+    def get_queryset(self):
+        return Category.objects.all()
+    
     def create_category(self, request, *args, **kwargs):
         
         serializer = CategorySerializer()
