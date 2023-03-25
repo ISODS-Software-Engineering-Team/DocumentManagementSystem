@@ -26,7 +26,13 @@ class CreateCategory(ListCreateAPIView):
         if serializer.is_valid():
             serializer.save()
             
-            return JsonResponse(serializer.data)
+            return JsonResponse(serializer.data)({
+                'message': 'Create a new Category successful!'
+            }, status=status.HTTP_201_CREATED)
+            
+        return JsonResponse({
+            'message': 'Create a new Document unsuccessful!'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 class ListCreateDocumentView(ListCreateAPIView):
     model = Document
