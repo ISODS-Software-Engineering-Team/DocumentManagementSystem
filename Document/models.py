@@ -19,6 +19,9 @@ class Document(models.Model):
     media_file = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
     created_date = models.DateTimeField()
+
+    # Add image field, set it to null, blank to null
+    document_image = models.ImageField(upload_to='document_images', null=True, blank=True)
     def __str__(self):
         return self.docs_id
 
