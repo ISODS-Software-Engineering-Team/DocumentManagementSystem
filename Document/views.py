@@ -148,3 +148,25 @@ class DeleteCategoryView(RetrieveUpdateDestroyAPIView):
             return JsonResponse({
                 'message': 'Deleted Category unsuccessful!'
             }, status=status.HTTP_400_BAD_REQUEST)
+
+class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
+    model = Document
+    serializer_class = DocumentSerializer
+
+    def get_queryset(self):
+        return Document.objects.all()
+
+    def put(self, request, **kwargs):
+        category = get_object_or_404(Document, id=kwargs.get('pk'))
+        serializer = DocumentSerializer(Document, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse({
+                'message': 'Update Category successful!'
+            }, status=status.HTTP_200_OK)
+
+        return JsonResponse({
+            'message': 'Update Category unsuccessful!'
+        }, status=status.HTTP_400_BAD_REQUEST)
