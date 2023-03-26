@@ -55,8 +55,6 @@ class Document(models.Model):
     class Meta:
         #specify table name
         db_table = 'Document'
-
-    
 ```
 #### 4. Create Serialiser(Document/serialiser.py)
 ```python
