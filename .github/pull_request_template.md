@@ -33,6 +33,12 @@ Add any implementation details
 - how to test it manually
 - any relevant screenshot
 
+# Risk
+- 
+
+# Dependencies
+- 
+
 # PR Checklist
 - [ ] Documentation
 - [ ] Unit testing passed
