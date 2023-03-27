@@ -17,10 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from Document.admin import admin_site
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('Document.urls')),
 ]
+
+admin.site.index_title = "Admin"
+admin.site.site_header = "Admin Management"
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
