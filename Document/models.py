@@ -31,13 +31,20 @@ class Document(models.Model):
 class User(AbstractUser):
     # Delete not use field
     username = models.CharField(max_length=100)
-    last_login = None
+
+    # Regular register will make a user is_user
+    # Register a user by admin will make a user is staff.
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_user = models.BooleanField(default=True)
+
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+
     password = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, unique=True)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'password']
+    REQUIRED_FIELDS = ['username', 'password', 'first_name', 'last_name']
 
     @staticmethod
     def has_perms(perm, obj=None):
