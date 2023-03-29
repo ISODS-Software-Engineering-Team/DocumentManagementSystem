@@ -9,27 +9,26 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from Document.models import Document
-from .models import Category
+from .models import Category, Document, User
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
 
-class CreateCategory(ListCreateAPIView):   
+class CreateCategory(ListCreateAPIView):
     model = Category
     serializer_class = CategorySerializer
-    
+
     def get_queryset(self):
         return Category.objects.all()
-    
+
     def create_category(self, request, *args, **kwargs):
-        
+
         serializer = CategorySerializer()
         if serializer.is_valid():
             serializer.save()
-            
+
             return JsonResponse(serializer.data)({
                 'message': 'Create a new Category successful!'
             }, status=status.HTTP_201_CREATED)
-            
+
         return JsonResponse({
             'message': 'Create a new Document unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
@@ -170,3 +169,18 @@ class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Update Category unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
+
+# Authorization for CRUD User Table
+# Requirement:
+# Only user with is_admin/is_staff has the authority to perform CRUD on User table
+# Approaching: check whether user is_admin/is_staff first, then we allow them to access to this API.
+
+class ListUserView(ListCreateAPIView):
+
+    model: User
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.all()
+
+

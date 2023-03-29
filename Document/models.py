@@ -48,7 +48,7 @@ class User(AbstractUser):
         return self.admin
 
     def __str__(self):
-        return self.email
+        return f'Email: {self.email}'
 
     class Meta:
         db_table = 'User'
