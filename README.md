@@ -4,7 +4,7 @@
 The Image bellow demonstrate how a simple Django_rest_framework work
 ![img.png](img.png)
 We can easily see that we need to create/define 
-- Url patterns to our application
+- Url patterns for our application
 - View for request processing
 - Serialiser to convert any model to serialized JSON objects
 - Model to specify our model such as Document, User, Category,...
@@ -25,7 +25,6 @@ python3 manage.py migrate
 ```
 python3 manage.py runserver
 ```
-
 ### How it works
 #### 1. Add Django Rest framwork to src/settings.py
 ``` 
