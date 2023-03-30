@@ -52,10 +52,14 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.admin
+        return self.is_superuser
+
 
     def __str__(self):
-        return f'Email: {self.email}'
+        return f'Email: {self.email}' f', ' \
+               f'First Name: {self.first_name},' \
+               f' Last Name: {self.last_name},'\
+                f' Staff: {self.is_staff}'
 
     class Meta:
         db_table = 'User'
