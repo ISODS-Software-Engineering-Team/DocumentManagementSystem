@@ -4,12 +4,11 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Category, Document, User
@@ -39,7 +38,7 @@ class CreateCategory(ListCreateAPIView):
 class ListCreateDocumentView(ListCreateAPIView):
     model = Document
     serializer_class = DocumentSerializer
-
+    permission_classes = (IsAuthenticated,)
     def get_queryset(self):
         return Document.objects.all()
 
@@ -173,54 +172,8 @@ class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
             'message': 'Update Category unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
 
-# Authorization for CRUD User Table
-# Requirement:
-# Only user with is_admin/is_staff has the authority to perform CRUD on User table
-# Approaching: check whether user is_admin/is_staff first, then we allow them to access to this API.
-
-# User view self info (admin - staff)
-class UserView(APIView):
-
-    model: User
-    serializer_class = UserSerializer
-
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        content ={
-            'user': str(request.user),
-            'auth': str(User.has_perms(request.user)),
-        }
-        return Response(content)
 
 
-# Staff/admin create User --------
-# Worked. But unfinished.
-class CreateUserView(ListCreateAPIView):
-    model: User
-    serializer_class = UserSerializer
 
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def create(self, request, *args, **kwargs):
-        content = {
-            'user': str(request.user),
-        }
-
-        serializer = UserSerializer(data=request.data)
-
-        staff = User.is_staff
-        admin = User.is_superuser
-        if serializer.is_valid() and (content.keys() != staff or admin):
-            return JsonResponse({
-                'message': 'You do not have permission to create a user'
-            })
-        elif serializer.is_valid() and (content.keys() is staff or admin):
-            serializer.save()
-            return JsonResponse({
-                'message': 'Successfully created a user'
-            })
 
 
