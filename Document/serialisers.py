@@ -12,8 +12,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # Add first_name, last_name, username for serialization to add into db
-        fields = ['email', 'password', 'first_name', 'last_name', 'username']
+        fields = ['email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
 

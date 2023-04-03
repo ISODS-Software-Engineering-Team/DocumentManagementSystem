@@ -152,3 +152,7 @@ SIMPLE_JWT = {
 # Media Root to create folder and store files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+ROLES = (
+    ('admin', 'Admin'),
+    ('staff', 'Staff'),
+)

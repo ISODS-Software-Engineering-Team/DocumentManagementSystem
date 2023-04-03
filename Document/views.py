@@ -56,7 +56,6 @@ class ListCreateDocumentView(ListCreateAPIView):
             'message': 'Create a new Document unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
 
-
 class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
     model = Document
     serializer_class = DocumentSerializer
@@ -83,7 +82,6 @@ class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Delete Document successful!'
         }, status=status.HTTP_200_OK)
-
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -149,7 +147,6 @@ class DeleteCategoryView(RetrieveUpdateDestroyAPIView):
             return JsonResponse({
                 'message': 'Deleted Category unsuccessful!'
             }, status=status.HTTP_400_BAD_REQUEST)
-
 class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
     model = Document
     serializer_class = DocumentSerializer
@@ -171,9 +168,3 @@ class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Update Category unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
