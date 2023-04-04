@@ -9,9 +9,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from rest_framework.permissions import IsAuthenticated
-
-from .models import Category, Document, User
+from Document.models import Document
+from .models import Category
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
 
 class CreateCategory(ListCreateAPIView):
@@ -38,7 +37,7 @@ class CreateCategory(ListCreateAPIView):
 class ListCreateDocumentView(ListCreateAPIView):
     model = Document
     serializer_class = DocumentSerializer
-    permission_classes = (IsAuthenticated,)
+
     def get_queryset(self):
         return Document.objects.all()
 
