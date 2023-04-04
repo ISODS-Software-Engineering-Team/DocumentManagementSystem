@@ -13,23 +13,23 @@ from Document.models import Document
 from .models import Category
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
 
-class CreateCategory(ListCreateAPIView):
+class CreateCategory(ListCreateAPIView):   
     model = Category
     serializer_class = CategorySerializer
-
+    
     def get_queryset(self):
         return Category.objects.all()
-
+    
     def create_category(self, request, *args, **kwargs):
-
+        
         serializer = CategorySerializer()
         if serializer.is_valid():
             serializer.save()
-
+            
             return JsonResponse(serializer.data)({
                 'message': 'Create a new Category successful!'
             }, status=status.HTTP_201_CREATED)
-
+            
         return JsonResponse({
             'message': 'Create a new Document unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
@@ -54,6 +54,7 @@ class ListCreateDocumentView(ListCreateAPIView):
         return JsonResponse({
             'message': 'Create a new Document unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
     model = Document
@@ -81,6 +82,7 @@ class UpdateDeleteDocumentView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Delete Document successful!'
         }, status=status.HTTP_200_OK)
+
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -146,6 +148,7 @@ class DeleteCategoryView(RetrieveUpdateDestroyAPIView):
             return JsonResponse({
                 'message': 'Deleted Category unsuccessful!'
             }, status=status.HTTP_400_BAD_REQUEST)
+
 class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
     model = Document
     serializer_class = DocumentSerializer
