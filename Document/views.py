@@ -9,9 +9,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from Document.models import Document
+from Document.models import Document, Competition
 from .models import Category
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
+from django.views.decorators.csrf import csrf_exempt
+
 
 class CreateCategory(ListCreateAPIView):   
     model = Category
@@ -170,3 +172,43 @@ class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Update Category unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
+    
+def get_all_competitions(request):
+    competitions = list(Competition.objects.all().values())
+    return JsonResponse(competitions, safe=False)
+
+def update_competition(request, competition_id):
+    try:
+        competition = Competition.objects.get(id=competition_id)
+    except Competition.DoesNotExist:
+        return JsonResponse({'error': 'Competition does not exist.'}, status=404)
+
+    if request.method == 'PUT':
+        # update competition fields based on request data
+        competition.name = request.POST.get('name', competition.name)
+        competition.detail = request.POST.get('detail', competition.detail)
+        competition.data_path = request.POST.get('data_path', competition.data_path)
+        competition.start_at = request.POST.get('start_at', competition.start_at)
+        competition.end_at = request.POST.get('end_at', competition.end_at)
+
+        # save updated competition to database
+        competition.save()
+
+        return JsonResponse({'message': 'Competition updated successfully.'}, status=200)
+
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def delete_competition(request, competition_id):
+    try:
+        competition = Competition.objects.get(id=competition_id)
+    except Competition.DoesNotExist:
+        return JsonResponse({'error': 'Competition does not exist.'}, status=404)
+
+    if request.method == 'DELETE':
+        # delete competition from database
+        competition.delete()
+
+        return JsonResponse({'message': 'Competition deleted successfully.'}, status=200)
+
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)

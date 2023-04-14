@@ -64,3 +64,15 @@ class User(AbstractUser):
     class Meta:
         db_table = 'User'
 
+class Competition(models.Model):
+    name = models.CharField(max_length=255)
+    detail = models.TextField()
+    data_path = models.CharField(max_length=255)
+    created_user = models.CharField(max_length=255)
+    created_date = models.DateTimeField(auto_now_add=True)
+    start_at = models.DateTimeField()
+    end_at = models.DateTimeField()
+
+    def __str__(self):
+        return self.name
+

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm
 
-from .models import User, Document, Category
+from .models import User, Document, Category, Competition
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # Register your models here.
 
@@ -37,4 +37,5 @@ admin_site = UserAdmin(User, UserAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Document)
 admin.site.register(Category)
+admin.site.register(Competition)
 
