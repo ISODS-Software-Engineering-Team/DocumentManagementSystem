@@ -140,9 +140,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'build/static')
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'build/static')
+# ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -155,6 +155,10 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
 }
+# specify domain to our frontend page
+# subject to change when deploy
+DOMAIN = 'localhost:3000'
+SITE_NAME = 'ISODS'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
