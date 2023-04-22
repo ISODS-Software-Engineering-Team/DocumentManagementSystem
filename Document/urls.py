@@ -12,8 +12,8 @@ urlpatterns = [
     path('update/<int:pk>/', views.UpdateCategoryView.as_view(), name='update-category'),
     path('competitions/', CompetitionListCreateView.as_view(), name='competition-list-create'),
     path('competitions/all', views.get_all_competitions, name='get_all_competitions'),
-    path('competition/<int:id>/update/', views.update_competition, name='update_competition'),
-    path('competition/<int:id>/delete/', views.delete_competition, name='delete_competition')
+    path('competition/<int:competition_id>/update/', views.update_competition, name='update_competition'),
+    path('competition/<int:competition_id>/delete/', views.delete_competition, name='delete_competition')
 
 
 ]

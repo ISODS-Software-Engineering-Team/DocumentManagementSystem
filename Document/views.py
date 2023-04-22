@@ -14,6 +14,8 @@ from .models import Category, Competition
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer,CompetitionSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
+from rest_framework.decorators import api_view
+
 
 class CreateCategory(ListCreateAPIView):   
     model = Category
@@ -181,40 +183,28 @@ def get_all_competitions(request):
     competitions = list(Competition.objects.all().values())
     return JsonResponse(competitions, safe=False)
 
-def update_competition(request, competition_id):
-    try:
-        competition = Competition.objects.get(id=competition_id)
-    except Competition.DoesNotExist:
-        return JsonResponse({'error': 'Competition does not exist.'}, status=404)
-
-    if request.method == 'PUT':
-        # update competition fields based on request data
-        competition.name = request.POST.get('name', competition.name)
-        competition.detail = request.POST.get('detail', competition.detail)
-        competition.data_path = request.POST.get('data_path', competition.data_path)
-        competition.start_at = request.POST.get('start_at', competition.start_at)
-        competition.end_at = request.POST.get('end_at', competition.end_at)
-
-        # save updated competition to database
-        competition.save()
-
-        return JsonResponse({'message': 'Competition updated successfully.'}, status=200)
-
-    return JsonResponse({'error': 'Invalid request method.'}, status=400)
-
-@csrf_exempt
+@api_view(['DELETE'])
 def delete_competition(request, competition_id):
     try:
         competition = Competition.objects.get(id=competition_id)
     except Competition.DoesNotExist:
-        return JsonResponse({'error': 'Competition does not exist.'}, status=404)
+        return Response({'error': 'Competition does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'DELETE':
-        # delete competition from database
-        competition.delete()
+    competition.delete()
+    return Response({'message': 'Competition deleted successfully.'}, status=status.HTTP_200_OK)
 
-        return JsonResponse({'message': 'Competition deleted successfully.'}, status=200)
+@api_view(['PUT'])
+def update_competition(request, competition_id):
+    try:
+        competition = Competition.objects.get(id=competition_id)
+    except Competition.DoesNotExist:
+        return Response({'error': 'Competition does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
-    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+    serializer = CompetitionSerializer(competition, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
