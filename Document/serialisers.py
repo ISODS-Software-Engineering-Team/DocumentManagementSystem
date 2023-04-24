@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from Document.models import Document, User, Category
+from Document.models import Document, User, Category, Competition
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -25,3 +25,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('category_id', 'category_name')
+
+class CompetitionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Competition
+        fields = ('id', 'name', 'detail', 'data_path', 'created_user', 'created_date', 'start_at', 'end_at')
+

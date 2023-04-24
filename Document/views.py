@@ -10,8 +10,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from Document.models import Document
-from .models import Category
-from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer
+from .models import Category, Competition
+from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer,CompetitionSerializer
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics
+from rest_framework.decorators import api_view
+
 
 class CreateCategory(ListCreateAPIView):   
     model = Category
@@ -170,3 +174,37 @@ class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Update Category unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
+    
+class CompetitionListCreateView(generics.ListCreateAPIView):
+    queryset = Competition.objects.all()
+    serializer_class = CompetitionSerializer
+    
+def get_all_competitions(request):
+    competitions = list(Competition.objects.all().values())
+    return JsonResponse(competitions, safe=False)
+
+@api_view(['DELETE'])
+def delete_competition(request, competition_id):
+    try:
+        competition = Competition.objects.get(id=competition_id)
+    except Competition.DoesNotExist:
+        return Response({'error': 'Competition does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+    competition.delete()
+    return Response({'message': 'Competition deleted successfully.'}, status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+def update_competition(request, competition_id):
+    try:
+        competition = Competition.objects.get(id=competition_id)
+    except Competition.DoesNotExist:
+        return Response({'error': 'Competition does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CompetitionSerializer(competition, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
