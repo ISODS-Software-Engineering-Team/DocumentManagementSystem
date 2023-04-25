@@ -29,5 +29,6 @@ class CategorySerializer(serializers.ModelSerializer):
 class CompetitionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competition
-        fields = ('id', 'name', 'detail', 'data_path', 'created_user', 'created_date', 'start_at', 'end_at')
-
+        fields = ('id', 'name', 'detail', 'data_path', 'created_user', 'created_date', 'start_at', 'end_at',
+                  'private_test_data')
+        # add private_test_data to serializer.

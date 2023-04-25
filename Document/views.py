@@ -17,23 +17,23 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 
 
-class CreateCategory(ListCreateAPIView):   
+class CreateCategory(ListCreateAPIView):
     model = Category
     serializer_class = CategorySerializer
-    
+
     def get_queryset(self):
         return Category.objects.all()
-    
+
     def create_category(self, request, *args, **kwargs):
-        
+
         serializer = CategorySerializer()
         if serializer.is_valid():
             serializer.save()
-            
+
             return JsonResponse(serializer.data)({
                 'message': 'Create a new Category successful!'
             }, status=status.HTTP_201_CREATED)
-            
+
         return JsonResponse({
             'message': 'Create a new Document unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
@@ -174,11 +174,11 @@ class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
         return JsonResponse({
             'message': 'Update Category unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
-    
-class CompetitionListCreateView(generics.ListCreateAPIView):
+
+class CompetitionListCreateView(ListCreateAPIView):
     queryset = Competition.objects.all()
     serializer_class = CompetitionSerializer
-    
+
 def get_all_competitions(request):
     competitions = list(Competition.objects.all().values())
     return JsonResponse(competitions, safe=False)
@@ -202,9 +202,32 @@ def update_competition(request, competition_id):
 
     serializer = CompetitionSerializer(competition, data=request.data)
     if serializer.is_valid():
+        # and serializer >= chunk_size:
+        # split()
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Need to implement write_chunk method for larger file such as 1TB or so
+# chunk_size = 1000
+# # filesystem APIs
+# def split():
+#     def write_chunk(part, lines):
+#         with open('../comp-data' + str(part) + '.csv', 'w') as f_out:
+#             f_out.write(header)
+#             f_out.writelines(lines)
+#     with open('data.csv', 'r') as f:
+#         count = 0
+#         header = f.readLine()
+#         lines = []
+#         for line in f:
+#             count += 1
+#             lines.append(line)
+#             if count % chunk_size == 0:
+#                 write_chunk(count // chunk_size, line)
+#                 lines = []
+#         # write remainder
+#         if len(lines) > 0:
+#             write_chunk((count // chunk_size) + 1, lines)
 
 

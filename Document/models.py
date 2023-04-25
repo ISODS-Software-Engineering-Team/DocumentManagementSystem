@@ -67,17 +67,22 @@ class User(AbstractUser):
 
 class Competition(models.Model):
     name = models.CharField(max_length=255)
-    detail = models.TextField()
     data_path = models.CharField(max_length=255)
-    private_test_data = models.CharField(max_length=255)
     created_user = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
 
+    detail = models.TextField(max_length=500, blank=True)
+    # Add test data field for user to upload test data
+    private_test_data = models.FileField(upload_to="comp-data")
+
     def __str__(self):
-        return self.name
-    
+        return f'Name: {self.name}' f', ' \
+               f'Detail: {self.detail},' \
+               f'Start at: {self.start_at},'\
+                f'End at: {self.end_at}'
+
     class Meta:
         db_table = "Competition"
 

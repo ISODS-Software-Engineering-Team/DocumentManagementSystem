@@ -214,3 +214,8 @@ ROLES = (
     ('admin', 'Admin'),
     ('staff', 'Staff'),
 )
+
+
+# Root for user to upload-- creating a folder and store files
+PRIVATE_DATA_ROOT = os.path.join(BASE_DIR, 'private_test')
+PRIVATE_DATA_URL = '/private_data/'
