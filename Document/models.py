@@ -75,7 +75,7 @@ class Competition(models.Model):
 
     detail = models.TextField(max_length=500, blank=True)
     # Add test data field for user to upload test data
-    private_test_data = models.FileField(upload_to="comp-data")
+    private_test_data = models.FileField(upload_to="private_test")
 
     def __str__(self):
         return f'Name: {self.name}' f', ' \
