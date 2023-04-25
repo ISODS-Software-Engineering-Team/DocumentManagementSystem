@@ -69,6 +69,7 @@ class Competition(models.Model):
     name = models.CharField(max_length=255)
     detail = models.TextField()
     data_path = models.CharField(max_length=255)
+    private_test_data = models.CharField(max_length=255)
     created_user = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     start_at = models.DateTimeField()
