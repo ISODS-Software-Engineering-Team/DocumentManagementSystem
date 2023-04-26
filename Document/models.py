@@ -25,6 +25,14 @@ class Document(models.Model):
     def __str__(self):
         return self.docs_id
 
+    def __all__(self):
+        return self.docs_id, \
+                self.category_id, \
+                self.brief, \
+                self.content, \
+                self.media_file, \
+                self.author, \
+                self. created_date
     class Meta:
         db_table = 'Document'
 
@@ -67,21 +75,36 @@ class User(AbstractUser):
 
 class Competition(models.Model):
     name = models.CharField(max_length=255)
-    data_path = models.CharField(max_length=255)
-    created_user = models.CharField(max_length=255)
+
+    created_by_user = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
 
-    detail = models.TextField(max_length=500, blank=True)
+    detail = models.TextField(max_length=10000, blank=True)
     # Add test data field for user to upload test data
     private_test_data = models.FileField(upload_to="private_test")
+    # Data field for competitor upload data
+    competitor_data = models.FileField(upload_to="competitor_data", blank=True)
+    # Data path for user to download
+    data_path = models.CharField(max_length=255)
 
     def __str__(self):
         return f'Name: {self.name}' f', ' \
                f'Detail: {self.detail},' \
                f'Start at: {self.start_at},'\
                 f'End at: {self.end_at}'
+
+    def __all__(self):
+        return self.name, \
+            self.created_by_user, \
+            self.start_at, \
+            self.end_at, \
+            self.detail, \
+            self.private_test_data, \
+            self.competitor_data, \
+            self.data_path
+
 
     class Meta:
         db_table = "Competition"
