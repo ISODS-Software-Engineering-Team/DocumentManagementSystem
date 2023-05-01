@@ -1,10 +1,13 @@
+import mimetypes
+import os
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -206,5 +209,60 @@ def update_competition(request, competition_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Need to implement write_chunk method for larger file such as 1TB or so
+# chunk_size = 1000
+# # filesystem APIs
+# def split():
+#     def write_chunk(part, lines):
+#         with open('../comp-data' + str(part) + '.csv', 'w') as f_out:
+#             f_out.write(header)
+#             f_out.writelines(lines)
+#     with open('data.csv', 'r') as f:
+#         count = 0
+#         header = f.readLine()
+#         lines = []
+#         for line in f:
+#             count += 1
+#             lines.append(line)
+#             if count % chunk_size == 0:
+#                 write_chunk(count // chunk_size, line)
+#                 lines = []
+#         # write remainder
+#         if len(lines) > 0:
+#             write_chunk((count // chunk_size) + 1, lines)
 
+
+""" 
+    function for download a csv file
+    define download function globally so multiple classes can use them.
+    Need to change the file name corresponding with extension such as .csv
+"""
+def download_file(request):
+    model = Competition
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    filename = 'LTC.csv'
+    filepath = BASE_DIR + '/media/private_test/' + filename
+    path = open(filepath, 'r')
+    mime_type, _ = mimetypes.guess_type(filepath)
+    response = HttpResponse(path, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename=%s" % filename
+    return response
+
+
+"""
+    Class to download a file with specific competition id.
+"""
+class DownloadCompetition(ListAPIView):
+    model = Competition
+    serializer_class = CompetitionSerializer
+
+    def get_queryset(self):
+        return Competition.objects.all()
+
+    def get(self, request, **kwargs):
+        competition = get_object_or_404(Competition, id=kwargs.get('pk'))
+        if competition.private_test_data.open("r"):
+            return download_file(request)
+        else:
+            return HttpResponse("Not found")
 
