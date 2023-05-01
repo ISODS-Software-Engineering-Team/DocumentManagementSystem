@@ -218,7 +218,11 @@ ROLES = (
 
 # Root for user to upload-- creating a folder and store files
 PRIVATE_DATA_ROOT = os.path.join(BASE_DIR, 'private_test')
-PRIVATE_DATA_URL = '/private_data/'
+PRIVATE_DATA_URL = 'private_test'
+
+# Root user to upload model-- creating a folder and store files
+TRAINING_MODEL_ROOT = os.path.join(BASE_DIR, 'models_training')
+TRAINING_MODEL_URL = '/models_training_data/'
 
 # Root for competitor upload-- creating a folder and store files
 COMPETITOR_DATA_ROOT = os.path.join(BASE_DIR, 'competitor_data')

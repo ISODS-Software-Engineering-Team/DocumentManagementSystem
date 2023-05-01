@@ -75,25 +75,42 @@ class User(AbstractUser):
 
 class Competition(models.Model):
     name = models.CharField(max_length=255)
-
     created_by_user = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
-
     detail = models.TextField(max_length=10000, blank=True)
-    # Add test data field for user to upload test data
-    private_test_data = models.FileField(upload_to="private_test")
-    # Data field for competitor upload data
+
+    """
+     Requirement: User (the person who create the competition) have to upload 2 files:
+     1. private test data: the original test ----- user must upload a file.
+     2. training model: a model for competitor to download ----- user must upload a file.
+     
+     Requirement: Competitor (the person who compete with other) have to upload/download 2 files:
+     1. competitor data: will be used to compare with original test ----- competitor must upload a file.
+     2. data path: competitor will download the training model above ----- competitor will download a file. 
+    """
+
+    # test data field for user to upload test data
+    private_test_data = models.FileField(upload_to="private_test", blank=True, null=True)
+
+    # Training test model user must upload for competitor to download and train the model
+    training_test_model = models.FileField(upload_to="models_training", blank=True)
+
+    # Data field for competitors to upload data
     competitor_data = models.FileField(upload_to="competitor_data", blank=True)
-    # Data path for user to download
-    data_path = models.CharField(max_length=255)
+
+    # Data path for competitors to download --> usually is an api
+    data_path = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return f'Name: {self.name}' f', ' \
                f'Detail: {self.detail},' \
                f'Start at: {self.start_at},'\
                 f'End at: {self.end_at}'
+    @property
+    def filename(self):
+        return self.private_test_data.split('/')[-1:][0]
 
     def __all__(self):
         return self.name, \
@@ -102,6 +119,7 @@ class Competition(models.Model):
             self.end_at, \
             self.detail, \
             self.private_test_data, \
+            self.training_test_model, \
             self.competitor_data, \
             self.data_path
 

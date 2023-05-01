@@ -13,7 +13,8 @@ urlpatterns = [
     path('competitions/', CompetitionListCreateView.as_view(), name='competition-list-create'),
     path('competitions/all', views.get_all_competitions, name='get_all_competitions'),
     path('competition/<int:competition_id>/update/', views.update_competition, name='update_competition'),
-    path('competition/<int:competition_id>/delete/', views.delete_competition, name='delete_competition')
+    path('competition/<int:competition_id>/delete/', views.delete_competition, name='delete_competition'),
+    path('competition/<int:competition_id>/download/', views.FileDownloadAPIView.as_view(), name='retrieve')
 
 
 ]
