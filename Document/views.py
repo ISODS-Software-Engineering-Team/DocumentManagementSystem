@@ -12,7 +12,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.http import HttpResponse
 from Document.models import Document
 from .models import Category, Competition
-from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer,CompetitionSerializer
+from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer, CompetitionSerializer
 from rest_framework.decorators import api_view
 
 
@@ -174,92 +174,92 @@ class UpdateCategoryView(RetrieveUpdateDestroyAPIView):
             'message': 'Update Category unsuccessful!'
         }, status=status.HTTP_400_BAD_REQUEST)
 
-class CompetitionListCreateView(ListCreateAPIView):
-    queryset = Competition.objects.all()
-    serializer_class = CompetitionSerializer
-
-def get_all_competitions(request):
-    competitions = list(Competition.objects.all().values())
-    return JsonResponse(competitions, safe=False)
-
-@api_view(['DELETE'])
-def delete_competition(request, competition_id):
-    try:
-        competition = Competition.objects.get(id=competition_id)
-    except Competition.DoesNotExist:
-        return Response({'error': 'Competition does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-
-    competition.delete()
-    return Response({'message': 'Competition deleted successfully.'}, status=status.HTTP_200_OK)
-
-@api_view(['PUT'])
-def update_competition(request, competition_id):
-    try:
-        competition = Competition.objects.get(id=competition_id)
-    except Competition.DoesNotExist:
-        return Response({'error': 'Competition does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = CompetitionSerializer(competition, data=request.data)
-    if serializer.is_valid():
-        # and serializer >= chunk_size:
-        # split()
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# Need to implement write_chunk method for larger file such as 1TB or so
-# chunk_size = 1000
-# # filesystem APIs
-# def split():
-#     def write_chunk(part, lines):
-#         with open('../comp-data' + str(part) + '.csv', 'w') as f_out:
-#             f_out.write(header)
-#             f_out.writelines(lines)
-#     with open('data.csv', 'r') as f:
-#         count = 0
-#         header = f.readLine()
-#         lines = []
-#         for line in f:
-#             count += 1
-#             lines.append(line)
-#             if count % chunk_size == 0:
-#                 write_chunk(count // chunk_size, line)
-#                 lines = []
-#         # write remainder
-#         if len(lines) > 0:
-#             write_chunk((count // chunk_size) + 1, lines)
-
-
-""" 
-    function for download a csv file
-    define download function globally so multiple classes can use them.
-    Need to change the file name corresponding with extension such as .csv
 """
-def download_file(request):
-    model = Competition
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    filename = 'LTC.csv'
-    filepath = BASE_DIR + '/media/private_test/' + filename
-    path = open(filepath, 'r')
-    mime_type, _ = mimetypes.guess_type(filepath)
-    response = HttpResponse(path, content_type=mime_type)
-    response['Content-Disposition'] = "attachment; filename=%s" % filename
-    return response
-
-
+    Rewrite: LongNguyen
+    Requirement:
+    1. Create Competition.
+    2. Read Competition: Display all Competitions in database, Display a specific Competition with id.
+    3. Update Competition: Update a specific Competition with id.
+    4. Delete Competition: Delete a specific competition with id.
 """
-    Class to download a file with specific competition id.
-"""
-class DownloadCompetition(ListAPIView):
+
+# Create Competition & Display all Competitions
+class CompetitionAPIView(ListCreateAPIView):
     model = Competition
     serializer_class = CompetitionSerializer
 
     def get_queryset(self):
         return Competition.objects.all()
 
-    def get(self, request, **kwargs):
-        competition = get_object_or_404(Competition, id=kwargs.get('pk'))
-        if competition.private_test_data.open("r"):
-            return download_file(request)
+    def get_competition(self):
+        queryset = self.get_queryset()
+        return get_object_or_404(queryset)
+
+    def create(self, request, *args, **kwargs):
+        serializer = CompetitionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({
+                'message': 'Created Competition successfully'
+            }, status=status.HTTP_201_CREATED)
         else:
-            return HttpResponse("Not found")
+            return JsonResponse({
+                'message': 'Created Competition unsuccessfully'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+# Display a specific Competition.
+class SpecificCompetitionAPIView(ListAPIView):
+    model = Competition
+    serializer_class = CompetitionSerializer
+
+    # override the get_queryset method to filter only the pk (primary key)
+    # usually pk is the ID
+    def get_queryset(self):
+        return Competition.objects.filter(id=self.kwargs.get('pk'))
+
+    # Call the get_queryset function and return it.
+    def get_object(self):
+        queryset = self.get_queryset()
+        return get_object_or_404(queryset)
+
+
+class UpdateAndDeleteCompetitionAPIView(RetrieveUpdateDestroyAPIView):
+    model = Competition
+    serializer_class = CompetitionSerializer
+
+    def get_queryset(self):
+        return Competition.objects.filter(id=self.kwargs.get('pk')).first()
+
+    def delete(self, request, *args, **kwargs):
+        # Try to get the object with specify id first
+        try:
+            competition = self.get_queryset()
+
+            # if able to find the object
+            if get_object_or_404(competition):
+                # delete the object and return a message
+                competition.delete()
+                return JsonResponse({
+                    'message': 'Deleted Competition Successfully'
+                }, status=status.HTTP_200_OK)
+            # catch exception
+            # appearing exception is unreachable.
+        except Competition.DoesNotExist:
+            return JsonResponse({
+                'message': 'Competition does not exist!'
+            }, status=status.HTTP_404_NOT_FOUND)
+
+    # Similar for delete logic.
+    def update(self, request, *args, **kwargs):
+        try:
+            competition = self.get_queryset()
+        except Competition.DoesNotExist:
+            return JsonResponse({
+                'message': 'Competition does not exist!'
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CompetitionSerializer(competition, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
