@@ -10,11 +10,11 @@ urlpatterns = [
     path('documents/<int:pk>', views.UpdateDeleteDocumentView.as_view()),
     path('category/<int:pk>', views.DeleteCategoryView.as_view()),
     path('update/<int:pk>/', views.UpdateCategoryView.as_view(), name='update-category'),
-    path('competitions/', CompetitionListCreateView.as_view(), name='competition-list-create'),
     path('competitions/all', views.get_all_competitions, name='get_all_competitions'),
     path('competition/<int:competition_id>/update/', views.update_competition, name='update_competition'),
     path('competition/<int:competition_id>/delete/', views.delete_competition, name='delete_competition'),
-    path('competition/<int:competition_id>/download/', views.FileDownloadAPIView.as_view(), name='retrieve')
-
-
+    path('competition/<int:pk>/download/', views.DownloadCompetition.as_view()),
+    path('competitions/', views.CompetitionAPIView.as_view()),
+    path('competitions/<int:pk>/', views.SpecificCompetitionAPIView.as_view()),
+    path('competition/download/', views.download_file)
 ]

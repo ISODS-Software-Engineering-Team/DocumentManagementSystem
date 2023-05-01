@@ -3,22 +3,17 @@ from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import get_object_or_404
 import mimetypes
-
-from rest_framework import status, viewsets, renderers
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+import os
+from rest_framework import status
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 from django.http import HttpResponse
 from Document.models import Document
-from src.settings import PRIVATE_DATA_URL, PRIVATE_DATA_ROOT
 from .models import Category, Competition
 from Document.serialisers import DocumentSerializer, UserSerializer, UserLoginSerializer, CategorySerializer,CompetitionSerializer
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics
-from rest_framework.decorators import api_view, action
-from django_downloadview import ObjectDownloadView
+from rest_framework.decorators import api_view
 
 
 class CreateCategory(ListCreateAPIView):
@@ -235,17 +230,36 @@ def update_competition(request, competition_id):
 #             write_chunk((count // chunk_size) + 1, lines)
 
 
-class FileDownloadAPIView(generics.ListAPIView):
+""" 
+    function for download a csv file
+    define download function globally so multiple classes can use them.
+    Need to change the file name corresponding with extension such as .csv
+"""
+def download_file(request):
+    model = Competition
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    filename = 'LTC.csv'
+    filepath = BASE_DIR + '/media/private_test/' + filename
+    path = open(filepath, 'r')
+    mime_type, _ = mimetypes.guess_type(filepath)
+    response = HttpResponse(path, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename=%s" % filename
+    return response
+
+
+"""
+    Class to download a file with specific competition id.
+"""
+class DownloadCompetition(ListAPIView):
     model = Competition
     serializer_class = CompetitionSerializer
-    queryset = Competition.objects.all()
 
-    @action(methods=['GET'], detail=True)
-    def retrieve(self, request, *args, **kwagrs):
-        # get object first
-        obj = self.get_object()
-        file_path = obj.private_test_data
-        filePointer = open(file_path, "r")
-        response = HttpResponse(filePointer, content_type='application/csv')
-        response['Content-Disposition'] = 'attachment; filename"%s"' % obj.filename
-        return response
+    def get_queryset(self):
+        return Competition.objects.all()
+
+    def get(self, request, **kwargs):
+        competition = get_object_or_404(Competition, id=kwargs.get('pk'))
+        if competition.private_test_data.open("r"):
+            return download_file(request)
+        else:
+            return HttpResponse("Not found")
