@@ -4,7 +4,7 @@ from django.http import JsonResponse, FileResponse
 from django.shortcuts import get_object_or_404
 import mimetypes
 
-from rest_framework import status
+from rest_framework import status, viewsets, renderers
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -242,13 +242,10 @@ class FileDownloadAPIView(generics.ListAPIView):
 
     @action(methods=['GET'], detail=True)
     def retrieve(self, request, *args, **kwagrs):
-        # first, we get the object.
+        # get object first
         obj = self.get_object()
-        # second, open private_test_data
-        file_handle = obj.private_test_data.open()
-        mimetype, _ = mimetypes.guess_type(obj.private_test_data.path)
-        response = FileResponse(file_handle, content_type=mimetype)
-        response['Content-Length'] = obj.private_test_data.size
-        response['Content-Disposition'] = "attachment; filename={}".format(obj.filename)
+        file_path = obj.private_test_data
+        filePointer = open(file_path, "r")
+        response = HttpResponse(filePointer, content_type='application/csv')
+        response['Content-Disposition'] = 'attachment; filename"%s"' % obj.filename
         return response
-
