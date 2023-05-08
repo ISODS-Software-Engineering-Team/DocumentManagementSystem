@@ -15,6 +15,7 @@ We can easily see that we need to create/define
 pip3 install django
 pip3 install djangorestframework
 pip3 install rest_framework_simplejwt
+pip3 install pymysql
 ```
  - DB mirgration
 ```
