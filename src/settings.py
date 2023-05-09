@@ -89,12 +89,13 @@ AUTH_USER_MODEL = 'Document.User'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 #Install mysql and create user/password like configuration bellow
+# user - password can be changed depends on your local.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'isods_competition',
-        'USER': 'root-isods',
-        'PASSWORD': 'Password123@',
+        'USER': 'admin',
+        'PASSWORD': 'password',
         'HOST': 'localhost',
         'PORT': '3306',
     }

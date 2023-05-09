@@ -127,3 +127,23 @@ class Competition(models.Model):
     class Meta:
         db_table = "Competition"
 
+""" User_Competition model:
+    store info of User who join the competition.
+"""
+class UserCompetition(models.Model):
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    joined_date = models.DateTimeField(auto_now_add=True)
+    result_path = models.CharField(max_length=500)
+    public_score = models.IntegerField()
+    private_score = models.IntegerField()
+
+    class Meta:
+        db_table = "User_Competition"
+
+
+    def __str__(self):
+        return f'User ID: {self.user_id}'f', '\
+            f'Competition ID: {self.competition_id}' f', '\
+            f'Joined Date: {self.joined_date}' f', '\
+            f'Public score: {self.public_score}'f'. '
