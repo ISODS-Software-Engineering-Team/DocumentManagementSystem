@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+
+
 class Category(models.Model):
     category_id = models.CharField(max_length=20)
     category_name = models.CharField(max_length=70)
@@ -22,19 +24,22 @@ class Document(models.Model):
 
     # Add image field, set it to null, blank to null
     document_image = models.ImageField(upload_to='document_images', null=True, blank=True)
+
     def __str__(self):
         return self.docs_id
 
     def __all__(self):
         return self.docs_id, \
-                self.category_id, \
-                self.brief, \
-                self.content, \
-                self.media_file, \
-                self.author, \
-                self. created_date
+            self.category_id, \
+            self.brief, \
+            self.content, \
+            self.media_file, \
+            self.author, \
+            self.created_date
+
     class Meta:
         db_table = 'Document'
+
 
 class User(AbstractUser):
     # Delete not use field
@@ -62,12 +67,11 @@ class User(AbstractUser):
     def is_admin(self):
         return self.is_superuser
 
-
     def __str__(self):
         return f'Email: {self.email}' f', ' \
                f'First Name: {self.first_name},' \
-               f' Last Name: {self.last_name},'\
-                f' Staff: {self.is_staff}'
+               f' Last Name: {self.last_name},' \
+               f' Staff: {self.is_staff}'
 
     class Meta:
         db_table = 'User'
@@ -106,8 +110,9 @@ class Competition(models.Model):
     def __str__(self):
         return f'Name: {self.name}' f', ' \
                f'Detail: {self.detail},' \
-               f'Start at: {self.start_at},'\
-                f'End at: {self.end_at}'
+               f'Start at: {self.start_at},' \
+               f'End at: {self.end_at}'
+
     @property
     def filename(self):
         return self.private_test_data.split('/')[-1:][0]
@@ -123,13 +128,15 @@ class Competition(models.Model):
             self.competitor_data, \
             self.data_path
 
-
     class Meta:
         db_table = "Competition"
+
 
 """ User_Competition model:
     store info of User who join the competition.
 """
+
+
 class UserCompetition(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -141,9 +148,16 @@ class UserCompetition(models.Model):
     class Meta:
         db_table = "User_Competition"
 
-
     def __str__(self):
-        return f'User ID: {self.user_id}'f', '\
-            f'Competition ID: {self.competition_id}' f', '\
-            f'Joined Date: {self.joined_date}' f', '\
-            f'Public score: {self.public_score}'f'. '
+        return f'User ID: {self.user_id}'f', ' \
+               f'Competition ID: {self.competition_id}' f', ' \
+               f'Joined Date: {self.joined_date}' f', '
+
+    # Function to return public score
+    def public_scores(self):
+        return f'Public Score: {self.public_score}'f'.'
+
+    # Function to return private score
+    def private_scores(self):
+        return f'Your Score: {self.private_score}' f'.'
+
